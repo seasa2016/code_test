@@ -19,7 +19,7 @@ model.gen = gen
 
 model.to("cuda")
 
-arr = torch.randn(2,10)
+arr = torch.randn(2,10).cuda()
 output = model(arr)
 
 print(output)
