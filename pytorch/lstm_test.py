@@ -34,18 +34,18 @@ def rnn_forwarder(rnn, inputs, seq_lengths):
 	packed_inputs = nn.utils.rnn.pack_padded_sequence(inputs,
 														sorted_seq_lengths.cpu().numpy(),
 														batch_first=batch_first)
-	res, state = rnn(packed_inputs)
-	print(state)
 
+	res, state = rnn(packed_inputs)
 	padded_res,_ = nn.utils.rnn.pad_packed_sequence(res, batch_first=batch_first)
 
 	# 恢复排序前的样本顺序
-	print(desorted_indices)
 	if batch_first:
 		desorted_res = padded_res[desorted_indices]
 	else:
 		desorted_res = padded_res[:, desorted_indices]
+	state = state[:,desorted_indices]
 	
+	print(state)
 	return desorted_res
 
 if __name__ == "__main__":
@@ -60,7 +60,6 @@ if __name__ == "__main__":
 
 	for i in range(5):
 		x[2][i] = x[1][4-i]
-	print(x)
 	desorted_res = rnn_forwarder(rnn, x, seq_lengths)
 
 	print(desorted_res)
@@ -71,3 +70,12 @@ if __name__ == "__main__":
 	not_packed_res, _ = rnn(x)
 	print(not_packed_res)
 	print(_)	
+	
+	
+	not_packed_res, _ = rnn(x[:,0,:].view(3,1,1))
+	for i in range(1,5):
+		print("-"*10)
+		not_packed_res, _ = rnn(x[:,i,:].view(3,1,1),_)
+		print(not_packed_res)
+		print(_)
+	
