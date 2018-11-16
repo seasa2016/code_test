@@ -18,17 +18,9 @@ class test(nn.Module):
         x = self.linear1(x)
         x = self.linear2(x)
 
-class t(nn.Module):
-    def __init__(self):
-        super(t,self).__init__()
-        self.test123123 = test()
 
-model = t()
-for i in model.named_parameters():
-    print(i)
-print('-'*10)
-print(model.parameters)
-print('-'*10)
-print(model)
-print('-'*10)
+model = test()
+for name,para in model.named_parameters():
+    print(name)
+    print(para.requires_grad , para)
 
